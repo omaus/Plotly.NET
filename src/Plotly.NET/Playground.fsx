@@ -32,19 +32,18 @@ type Chart with
 
     static member ProportionalArea(posGroupSizes: (#System.IConvertible * #System.IConvertible * int) list, ?Orientation: StyleParam.Orientation, ?MarkerSymbol: StyleParam.MarkerSymbol, ?MarkerColor: Color, ?MarkerColorScale: StyleParam.Colorscale) =
 
-        let biggestDiameter = posGroupSizes |> List.maxBy (fun (p,g,s) -> s)
-        let smallesDiameter = posGroupSizes |> List.minBy (fun (p,g,s) -> s)
-        // search for normalize in Master Thesis code...
-        //let y = posGroupSizes |> List.map 
+        let biggestDiameter = posGroupSizes |> List.maxBy (fun (p,g,s) -> s) |> fun (p,g,s) -> float s
+        let smallestDiameter = posGroupSizes |> List.minBy (fun (p,g,s) -> s) |> fun (p,g,s) -> float s
+        let sizeAdjusted = posGroupSizes |> List.map (fun (p,g,s) -> p, g, (float s + 3. - smallestDiameter) / (biggestDiameter + 3. - smallestDiameter) * 175. |> int)
 
         // use categorical axis for y axis description (maybe via casting to string)
 
         match Orientation with
         | None
         | Some StyleParam.Orientation.Horizontal ->
-            Chart.Bubble(posGroupSizes, ?MarkerSymbol = MarkerSymbol, ?MarkerColor = MarkerColor, ?MarkerColorScale = MarkerColorScale)
+            Chart.Bubble(sizeAdjusted, ?MarkerSymbol = MarkerSymbol, ?MarkerColor = MarkerColor, ?MarkerColorScale = MarkerColorScale)
         | Some StyleParam.Orientation.Vertical ->
-            posGroupSizes 
+            sizeAdjusted 
             |> List.map (fun (p,g,s) -> g, p, s)
             |> fun orientationAdjusted -> Chart.Bubble(orientationAdjusted, ?MarkerSymbol = MarkerSymbol) 
             |> Chart.withYAxis(LayoutObjects.LinearAxis.init (AutoRange = StyleParam.AutoRange.Reversed))     // search for a way to reverse y axis but without changing the values since they could be strings
@@ -57,7 +56,25 @@ Chart.ProportionalArea(xysizes, Orientation = StyleParam.Orientation.Vertical) |
 Chart.Line([1,1; 2,2], LineColorScale = StyleParam.Colorscale.Earth) |> Chart.show
 Chart.Line([1,1; 2,2]) |> Chart.show
 
-let xysizes2 = ["Factor1", "Group1", 175; "Factor1", "Group2", 3; "Factor2", "Group1", 175; "Factor2", "Group2", 10]
+let xysizes2 = ["Factor1", "Group1", 1000; "Factor1", "Group2", 3; "Factor2", "Group1", 175; "Factor2", "Group2", 10]
 Chart.ProportionalArea(xysizes2) |> Chart.show
 let xysizes3 = [1., "Group1", 100; 1., "Group2", 50; 1.1, "Group1", 125; 1.00001, "Group2", 10]
 Chart.ProportionalArea(xysizes3) |> Chart.show
+
+
+
+/// Takes an array of floats and performs a 0;1-normalization on it.
+let normalize (data: float []) =
+    let yMax = Array.max data
+    let yMin = Array.min data
+    data |> Array.map (fun y -> (y + 3. - yMin) / (yMax + 3. - yMin) * 175.)
+
+normalize (xysizes2 |> List.map (fun (p,g,s) -> float s) |> Array.ofList)
+
+let testSatz = [4.; 7.; 3.; 5.; 10.]
+let minDavon = List.min testSatz
+let maxDavon = List.max testSatz
+testSatz |> List.map (fun y -> (y - minDavon) / (maxDavon - minDavon))
+
+
+let inline add (x : 'T) (y : 'T) : 'T = x + y
