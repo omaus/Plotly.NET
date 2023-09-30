@@ -35,7 +35,9 @@ type Chart with
         let biggestDiameter = posGroupSizes |> List.maxBy (fun (p,g,s) -> s)
         let smallesDiameter = posGroupSizes |> List.minBy (fun (p,g,s) -> s)
         // search for normalize in Master Thesis code...
-        let y = posGroupSizes |> List.map 
+        //let y = posGroupSizes |> List.map 
+
+        // use categorical axis for y axis description (maybe via casting to string)
 
         match Orientation with
         | None
@@ -45,10 +47,10 @@ type Chart with
             posGroupSizes 
             |> List.map (fun (p,g,s) -> g, p, s)
             |> fun orientationAdjusted -> Chart.Bubble(orientationAdjusted, ?MarkerSymbol = MarkerSymbol) 
-            //|> Chart.withYAxisStyle()     // search for a way to reverse y axis but without changing the values since they could be strings
+            |> Chart.withYAxis(LayoutObjects.LinearAxis.init (AutoRange = StyleParam.AutoRange.Reversed))     // search for a way to reverse y axis but without changing the values since they could be strings
 
 
-Chart.ProportionalArea(xysizes, MarkerColors = [Color.fromString "black"; Color.fromString "red"]) |> Chart.show
+Chart.ProportionalArea(xysizes, MarkerColor = Color.fromColors [Color.fromString "black"; Color.fromString "red"]) |> Chart.show
 Chart.ProportionalArea(xysizes, MarkerColorScales = [StyleParam.Colorscale.Electric]) |> Chart.show
 Chart.ProportionalArea(xysizes, Orientation = StyleParam.Orientation.Vertical) |> Chart.show
 
