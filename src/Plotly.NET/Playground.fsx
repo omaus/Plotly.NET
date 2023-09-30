@@ -1,186 +1,61 @@
-﻿#r "nuget: FSharp.Data"
-#r "nuget: Deedle"
-#r "nuget: FSharpAux"
-#r "nuget: DynamicObj"
-#r "nuget: Newtonsoft.Json, 13.0.1"
+﻿//#r "nuget: Plotly.NET"
+#r "nuget: DynamicObj, 2.0.0"
+#r "nuget: Giraffe.ViewEngine.StrongName, 2.0.0-alpha1"
 
-#load "InternalUtils.fs"
+#I "bin/Debug/netstandard2.0"
+#I "bin/Release/netstandard2.0"
+#r "Plotly.NET.dll"
 
-#I "CommonAbstractions"
 
-#load "ColorKeyword.fs"
-#load "Colors.fs"
-#load "StyleParams.fs"
-#load "TickFormatStop.fs"
-#load "Frame.fs"
-#load "Font.fs"
-#load "Title.fs"
-#load "ColorBar.fs"
-#load "Line.fs"
-
-#I "Layout/ObjectAbstractions/Common"
-
-#load "LayoutImage.fs"
-#load "Button.fs"
-#load "RangeSelector.fs"
-#load "RangeSlider.fs"
-#load "Transition.fs"
-#load "ActiveShape.fs"
-#load "ModeBar.fs"
-#load "DefaultColorScales.fs"
-#load "UniformText.fs"
-#load "Margin.fs"
-#load "Domain.fs"
-#load "Shape.fs"
-#load "Hoverlabel.fs"
-#load "Annotation.fs"
-#load "LayoutGrid.fs"
-#load "Legend.fs"
-#load "Rangebreak.fs"
-#load "LinearAxis.fs"
-#load "ColorAxis.fs"
-#load "Padding.fs"
-#load "Updatemenu.fs"
-
-#I "Layout/ObjectAbstractions/Map"
-
-#load "GeoProjection.fs"
-#load "Geo.fs"
-#load "MapboxLayerSymbol.fs"
-#load "MapboxLayer.fs"
-#load "Mapbox.fs"
-
-#I "Layout/ObjectAbstractions/3D"
-
-#load "Camera.fs"
-#load "AspectRatio.fs"
-#load "Scene.fs"
-
-#I "Layout/ObjectAbstractions/Polar"
-
-#load "AngularAxis.fs"
-#load "RadialAxis.fs"
-#load "Polar.fs"
-
-#I "Layout/ObjectAbstractions/Smith"
-
-#load "ImaginaryAxis.fs"
-#load "RealAxis.fs"
-#load "Smith.fs"
-
-#I "Layout/ObjectAbstractions/Ternary"
-
-#load "Ternary.fs"
-
-#I "Layout/ObjectAbstractions/Common/Slider"
-
-#load "SliderCurrentValue.fs"
-#load "SliderStep.fs"
-#load "Slider.fs"
-
-#load "Layout/Layout.fs"
-
-#I "Traces/ObjectAbstractions"
-
-#load "Gradient.fs"
-#load "Pattern.fs"
-#load "Marker.fs"
-#load "Projection.fs"
-#load "Surface.fs"
-#load "SpaceFrame.fs"
-#load "Slices.fs"
-#load "Caps.fs"
-#load "StreamTubeStarts.fs"
-#load "Lighting.fs"
-#load "Selection.fs"
-#load "StockData.fs"
-#load "Pathbar.fs"
-#load "Treemap.fs"
-#load "Sunburst.fs"
-#load "Contours.fs"
-#load "Dimensions.fs"
-#load "WaterfallConnector.fs"
-#load "FunnelConnector.fs"
-#load "Box.fs"
-#load "MeanLine.fs"
-#load "Bins.fs"
-#load "Cumulative.fs"
-#load "Error.fs"
-#load "Table.fs"
-#load "Indicator.fs"
-#load "Icicle.fs"
-#load "FinanceMarker.fs"
-#load "SplomDiagonal.fs"
-#load "Sankey.fs"
-
-#I "Traces"
-
-#load "Trace.fs"
-#load "Trace2D.fs"
-#load "Trace3D.fs"
-#load "TracePolar.fs"
-#load "TraceGeo.fs"
-#load "TraceMapbox.fs"
-#load "TraceTernary.fs"
-#load "TraceCarpet.fs"
-#load "TraceDomain.fs"
-#load "TraceSmith.fs"
-#load "TraceID.fs"
-
-#I "Config/ObjectAbstractions"
-
-#load "Edits.fs"
-#load "ToImageButtonOptions.fs"
-
-#I "Config"
-
-#load "Config.fs"
-
-#I "DisplayOptions"
-
-#load "DisplayOptions.fs"
-
-#I "Templates"
-
-#load "Template.fs"
-#load "ChartTemplates.fs"
-#load "Defaults.fs"
-
-#I "ChartAPI"
-
-#load "GenericChart.fs"
-#load "Chart.fs"
-#load "Chart2D.fs"
-#load "Chart3D.fs"
-#load "ChartPolar.fs"
-#load "ChartMap.fs"
-#load "ChartTernary.fs"
-#load "ChartCarpet.fs"
-#load "ChartDomain.fs"
-#load "ChartSmith.fs"
-
-#I "CSharpLayer"
-
-#load "GenericChartExtensions.fs"
-
-open DynamicObj
-
-open Plotly.NET
-open Plotly.NET.LayoutObjects
-open Plotly.NET.TraceObjects
-open Plotly.NET.ConfigObjects
-
-open FSharp.Data
-open Newtonsoft.Json
-open System.Text
-open System.IO
-open Deedle
-open FSharpAux
-
-open System
-open System.IO
+//open Giraffe.ViewEngine.StrongName
 
 open Plotly.NET
 
-open System
-open Plotly.NET
+
+let xysizes = [1,"Group1",100; 1,"Group2",200; 2,"Group1",110; 2,"Group2",80]    // bubble size (third part of tuple) is diameter in px
+Chart.Bubble(xysizes, MarkerSymbol = StyleParam.MarkerSymbol.CircleCross, MarkerColor = Color.fromColorScaleValues (xysizes |> List.map (fun (p,g,s) -> s)), MarkerColorScale = StyleParam.Colorscale.Earth) |> Chart.withMarkerStyle(ShowScale = true) |> Chart.show
+Chart.Bubble(xysizes, MarkerSymbol = StyleParam.MarkerSymbol.CircleCross, Orientation = StyleParam.Orientation.Horizontal) |> Chart.show
+Chart.Bubble(xysizes, MarkerSymbol = StyleParam.MarkerSymbol.CircleCross, Orientation = StyleParam.Orientation.Vertical) |> Chart.show
+
+["Moliver"; "Oliver"; "Loliver"; "Oliver"] |> List.countBy id
+
+
+// Overloads:
+// - posGroupSizes (position in the group = column, each group = a row, size as pixel diameter) (standard ctor)
+// - x (position in the group = column), group (each group = a row), size as pixel diameter (alt ctor)
+// - posGroupSizes (position in the group = column, each group = a row, size as pixel area) (alt ctor)
+// - x (position in the group = column), group (each group = a row), size as pixel area (alt ctor)
+// Options for: 
+// - orientation (switches groups and positions (so that groups are now columns and positions are rows)
+
+type Chart with
+
+    static member ProportionalArea(posGroupSizes: (#System.IConvertible * #System.IConvertible * int) list, ?Orientation: StyleParam.Orientation, ?MarkerSymbol: StyleParam.MarkerSymbol, ?MarkerColor: Color, ?MarkerColorScale: StyleParam.Colorscale) =
+
+        let biggestDiameter = posGroupSizes |> List.maxBy (fun (p,g,s) -> s)
+        let smallesDiameter = posGroupSizes |> List.minBy (fun (p,g,s) -> s)
+        // search for normalize in Master Thesis code...
+        let y = posGroupSizes |> List.map 
+
+        match Orientation with
+        | None
+        | Some StyleParam.Orientation.Horizontal ->
+            Chart.Bubble(posGroupSizes, ?MarkerSymbol = MarkerSymbol, ?MarkerColor = MarkerColor, ?MarkerColorScale = MarkerColorScale)
+        | Some StyleParam.Orientation.Vertical ->
+            posGroupSizes 
+            |> List.map (fun (p,g,s) -> g, p, s)
+            |> fun orientationAdjusted -> Chart.Bubble(orientationAdjusted, ?MarkerSymbol = MarkerSymbol) 
+            //|> Chart.withYAxisStyle()     // search for a way to reverse y axis but without changing the values since they could be strings
+
+
+Chart.ProportionalArea(xysizes, MarkerColors = [Color.fromString "black"; Color.fromString "red"]) |> Chart.show
+Chart.ProportionalArea(xysizes, MarkerColorScales = [StyleParam.Colorscale.Electric]) |> Chart.show
+Chart.ProportionalArea(xysizes, Orientation = StyleParam.Orientation.Vertical) |> Chart.show
+
+Chart.Line([1,1; 2,2], LineColorScale = StyleParam.Colorscale.Earth) |> Chart.show
+Chart.Line([1,1; 2,2]) |> Chart.show
+
+let xysizes2 = ["Factor1", "Group1", 175; "Factor1", "Group2", 3; "Factor2", "Group1", 175; "Factor2", "Group2", 10]
+Chart.ProportionalArea(xysizes2) |> Chart.show
+let xysizes3 = [1., "Group1", 100; 1., "Group2", 50; 1.1, "Group1", 125; 1.00001, "Group2", 10]
+Chart.ProportionalArea(xysizes3) |> Chart.show
